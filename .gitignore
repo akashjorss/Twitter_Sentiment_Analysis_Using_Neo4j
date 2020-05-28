@@ -343,3 +343,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/linux,macos,pycharm,windows,eclipse,intellij,intellij+all
+.DS_Store
