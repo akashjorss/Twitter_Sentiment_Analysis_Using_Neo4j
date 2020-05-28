@@ -6,7 +6,7 @@ To view the project board: https://github.com/akashjorss/SDM_BDM_Joint_Project/p
 Follow GitHub flow: https://guides.github.com/introduction/flow/
 1. Clone this branch (git clone "repo_url")
 2. Checkout a branch (git checkout -b "branch_name")
-3. Make changes to the code. (Create your java project or add a class to the existing java)
+3. Make changes to the code. (Create your java project or add a class to the existing project)
 4. Write a readme.
 5. push the changes to the branch. 
 6. Submit a pull request for the review. 
