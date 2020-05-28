@@ -1,5 +1,5 @@
 ## SDM_BDM_Joint_Project
-Twitter sentiment analysis
+Twitter sentiment analysis using Speed layer implementation of Lambda architecture. 
 
 ## How to contribute to this project?
 Follow GitHub flow: https://guides.github.com/introduction/flow/
@@ -16,14 +16,9 @@ Twitter -> Kafka -> Spark Streaming -> (Neo4j, MongoDB)
 
 ## Arguments of stream processing over batch processing
 1. Data is time sensitive.
-2. end user is interested in information that can be obtained by stream processing algorithms.
+2. End user is interested in information that can be obtained by stream processing algorithms.
 3. Process a unit of data, e.g., a tweet, at a time, as opposed to data as a whole. Batch processing is done in neo4j where algorithms run on the whole data. 
-4. No need for scheduling tool, since data is continuously arriving and being processed. 
-
-## Is there a need for scheduling tool for Neo4j? 
-No, since stream is incoming all the time. 
-Neo4j can run background jobs periodically: 
-https://neo4j.com/docs/labs/apoc/current/background-operations/background-jobs/
+4. No need for scheduling tool, since data is continuously arriving and being processed. Neo4j can run background jobs periodically. https://neo4j.com/docs/labs/apoc/current/background-operations/background-jobs/
 
 ## Architecture should tackle volume, velocity and variety. 
 MongoDB for Volume and Variety: 
