@@ -2,15 +2,15 @@
 Twitter sentiment analysis using Speed layer implementation of Lambda architecture. 
 
 ### How to contribute to this project?
+To view the project board: https://github.com/akashjorss/SDM_BDM_Joint_Project/projects/1
 Follow GitHub flow: https://guides.github.com/introduction/flow/
 1. Clone this branch (git clone "repo_url")
 2. Checkout a branch (git checkout -b "branch_name")
-3. Make changes to the code.
+3. Make changes to the code. (Create your java project or add a class to the existing java)
 4. Write a readme.
 5. push the changes to the branch. 
 6. Submit a pull request for the review. 
 
-Create your java project or add a class to the existing java
 ### Architecture
 Twitter -> Kafka -> Spark Streaming -> (Neo4j, MongoDB)
 
