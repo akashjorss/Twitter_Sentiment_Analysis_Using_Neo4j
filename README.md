@@ -2,7 +2,7 @@
 Twitter sentiment analysis using Speed layer implementation of Lambda architecture. 
 
 ### How to contribute to this project?
-To view the project board: https://github.com/akashjorss/SDM_BDM_Joint_Project/projects/1
+To view the project board: https://github.com/akashjorss/SDM_BDM_Joint_Project/projects/1<br>
 Follow GitHub flow: https://guides.github.com/introduction/flow/
 1. Clone this branch (git clone "repo_url")
 2. Checkout a branch (git checkout -b "branch_name")
