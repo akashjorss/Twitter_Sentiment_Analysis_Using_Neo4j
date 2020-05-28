@@ -1,4 +1,4 @@
-## SDM_BDM_Joint_Project
+## SDM/BDM Joint Project
 Twitter sentiment analysis using Speed layer implementation of Lambda architecture. 
 
 ### How to contribute to this project?
