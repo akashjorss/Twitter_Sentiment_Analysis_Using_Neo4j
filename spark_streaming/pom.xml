@@ -40,6 +40,11 @@
             <artifactId>tika-core</artifactId>
             <version>1.20</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.googlejavaformat</groupId>
+            <artifactId>google-java-format</artifactId>
+            <version>1.8</version>
+        </dependency>
 
     </dependencies>
 </project>
