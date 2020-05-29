@@ -21,13 +21,13 @@ Twitter -> Kafka -> Spark Streaming -> (Neo4j, MongoDB)
 4. No need for scheduling tool, since data is continuously arriving and being processed. Neo4j can run background jobs periodically. https://neo4j.com/docs/labs/apoc/current/background-operations/background-jobs/
 
 ### Architecture should tackle volume, velocity and variety. 
-MongoDB for Volume and Variety: <ol>
+MongoDB for Volume and Variety: <ul>
   <li>Schemaless DBMS, for Variety. 
   <li>Scalable, for volume. 
   <li>Fault tolerant. 
-  <li>Good for OLAP due to aggregation pipeline.</ol>
-Spark Streaming for velocity: <ol>
-  <li>Process one tweet (or a document) at a time.</ol>
+  <li>Good for OLAP due to aggregation pipeline.</ul>
+Spark Streaming for velocity: <ul>
+  <li>Process one tweet (or a document) at a time.</ul>
 
 ### Artifacts
 These are the files that are generated during the development process but are not used for deployment. 
