@@ -34,11 +34,12 @@ These are the files that are generated during the development process but are no
 These can be helpful scripts for testing or POC. Put all such scripts in the artifacts directory. 
 
 ### Classes needed to be implement
-Kafka
-Spark Streaming
-MongoDB
-Neo4j
-Machine learning
+<ul>
+<li>Kafka
+<li>Spark Streaming
+<li>MongoDB
+<li>Neo4j
+<li>Machine learning
 
 
 
