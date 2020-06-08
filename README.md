@@ -6,7 +6,7 @@ To view the project board: https://github.com/akashjorss/SDM_BDM_Joint_Project/p
 Follow GitHub flow: https://guides.github.com/introduction/flow/
 1. Clone this branch (git clone "repo_url")
 2. Checkout a branch (git checkout -b "branch_name")
-3. Make changes to the code. (Create your java project or add a class to the existing project)
+3. Make changes to the code. (Create a python file or add a method to the existing project)
 4. Write a readme.
 5. push the changes to the branch. 
 6. Submit a pull request for the review. 
@@ -33,10 +33,12 @@ Spark Streaming for velocity: <ul>
 These are the files that are generated during the development process but are not used for deployment. 
 These can be helpful scripts for testing or POC. Put all such scripts in the artifacts directory. 
 
-### Spark Streaming
-This java project is already initialized in the repository. 
-This is basically taken from BDM Spark Streaming lab and we can reuse code. 
-
+### Classes needed to be implement
+Kafka
+Spark Streaming
+MongoDB
+Neo4j
+Machine learning
 
 
 
