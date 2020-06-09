@@ -1,85 +1,109 @@
-from py2neo import Graph
 from py2neo import Graph, Node, Relationship
 import json
-from textblob import TextBlob
-
-def load_data(tweet):
-    """
-    :param tweet: a json doc with following schema
-    {
-        "type": "record",
-        "name": "tweet",
-        "keys" : [
-            {"name": "company", "type": "string"},
-            {"name": "sentiment", "type": "integer"},
-            {"name": "id", "type": "string"},
-            {"name": "date", "type": "string"},
-            {"name": "time", "type": "string"},
-            {"name": "retweet_count", "type": "integer"}
-            {"name":"hashtags", "type":array}
-            ]
-    }
-    :return: None
-    """
-    graph = Graph("bolt://localhost:7687", auth = ("neo4j", "password"), database = "Database")
-    tx = graph.begin()
-    company_node = Node("Company", name=tweet["company"])
-    tx.create(company_node)
-    tweet_node = Node("Tweet", id = tweet["id"], sentiment=tweet["sentiment"], retweet_count = tweet["retweet_count"])#specify properties here)
-    tx.create(tweet_node)
-    # create datetime node with discretisation
-    datetime_node = Node("DateTime", name=tweet["time"].split(":")[0]+"_"+tweet["date"])
-    if graph.exists(datetime_node) == False:
-        print("False")
-        tx.create(datetime_node)
-    created_on = Relationship.type("CREATED_ON")
-    tx.merge(created_on(tweet_node, datetime_node), "Tweet", "name")
-    # create hashtag nodes and check their existence
-    # if they exist form relationship with them else create them
-    for hashtag in tweet["hashtags"]:
-        hashtag_node = Node("Hashtag", name=hashtag)
-        has_hashtag = Relationship.type("HAS_HASHTAG")
-        tx.merge(has_hashtag(tweet_node, hashtag_node), "Tweet", "name")
-        # if graph.exists(hashtag_node):
-        #     pass #form relationship between tweet and hashtag
-        # else:
-        #     tx.create(hashtag_node)
-
-    tx.commit()
+import utils
 
 
-def prune_tweet(tweet, company):
-    """
-    :param tweet: a native tweet object
-    :return: tweet, a modified tweet object with only relevant keys
-    """
-    #calculate polarity
-    polarity = TextBlob(tweet["text"]).sentiment.polarity
-    hashtags = []
-    for h in tweet["entities"]["hashtags"]:
-        hashtags.append(h["text"])
-    date = tweet["created_at"].split(" ")[2]+"_"+tweet["created_at"].split(" ")[1]+"_"+tweet["created_at"].split(" ")[5]
-    time = tweet["created_at"].split(" ")[3]
-    modified_tweet = {
-        "id": tweet["id_str"],
-        "company": company,
-        "sentiment": polarity,
-        "retweet_count": tweet["retweet_count"],
-        "date": date,
-        "time": time,
-        "hashtags": hashtags,
-    }
-    return modified_tweet
+class Neo4j:
+    def __init__(self):
+        # initialize the self.graph
+        self.graph = Graph("bolt://localhost:7687", auth=("neo4j", "password"), database="Database")
+
+    def delete_all(self):
+        self.graph.delete_all()
+
+    def load_data(self, tweet):
+        """
+        :param tweet: a json doc with following schema
+        {
+            "type": "record",
+            "name": "tweet",
+            "keys" : [
+                {"name": "company", "type": "string"},
+                {"name": "sentiment", "type": "integer"},
+                {"name": "id", "type": "string"},
+                {"name": "date", "type": "string"},
+                {"name": "time", "type": "string"},
+                {"name": "retweet_count", "type": "integer"}
+                {"name":"hashtags", "type":array}
+                ]
+        }
+        :return: None
+        """
+
+        # retrieve company node from the remote self.graph
+        company = self.graph.evaluate("MATCH(n) WHERE n.name = {company} return n", company=tweet["company"])
+        # if remote node is null, create company node
+        if company is None:
+            company = Node("Company", name=tweet["company"])
+            self.graph.create(company)
+            # print("Node created:", company)
+
+        # repeat above for all nodes
+        tweet_node = self.graph.evaluate("MATCH(n) WHERE n.id = {id} return n", id=tweet["id"])
+        if tweet_node is None:
+            tweet_node = Node("Tweet", id=tweet["id"], sentiment=tweet["sentiment"], retweet_count=tweet["retweet_count"])
+            self.graph.create(tweet_node)
+            # print("Node created:", tweet_node)
+
+        datetime = self.graph.evaluate("MATCH(n) WHERE n.time = {time} AND n.date = {date} return n",
+                                  time=tweet["time"].split(":")[0]+':'+tweet["time"].split(':')[1],
+                                  date=tweet["date"])
+        if datetime is None:
+            datetime = Node("DateTime", time=tweet["time"].split(":")[0]+':'+tweet["time"].split(":")[1], date=tweet["date"])
+            self.graph.create(datetime)
+            # print("Node created:", datetime)
+
+        # create relationships
+        # check if describes already exists
+        describes = Relationship(tweet_node, "DESCRIBES", company)
+        created_on = Relationship(tweet_node, "CREATED_ON", datetime)
+        self.graph.create(describes)
+        self.graph.create(created_on)
+        # print("Relationships created")
+
+        # create hashtag nodes and connect them with tweet nodes
+        for hashtag in tweet["hashtags"]:
+            hashtag_node = self.graph.evaluate("MATCH(n) WHERE n.name = {hashtag} return n", hashtag=hashtag)
+            if hashtag_node is None:
+                hashtag_node = Node("Hashtag", name=hashtag)
+                self.graph.create(hashtag_node)
+                contains_hashtag = Relationship(tweet_node, "CONTAINS_HASHTAG", hashtag_node)
+                self.graph.create(contains_hashtag)
+        # print("Hashtag nodes created")
+        # print("Changes to self.graph complete")
 
 
-# read google tweets file
-with open('Artifacts/google_tweets.json', 'r') as f:
-    tweets = f.readlines()
 
-# clear the graph
-graph = Graph("bolt://localhost:7687", auth = ("neo4j", "password"), database = "Database")
-graph.delete_all()
+if __name__ == "__main__":
+    # read tweets files of different companies
+    with open('Artifacts/google_tweets.json', 'r') as f:
+        google_tweets = f.readlines()
+    with open('Artifacts/apple_tweets.json', 'r') as f:
+        apple_tweets = f.readlines()
+    with open('Artifacts/apple_tweets.json', 'r') as f:
+        huawei_tweets = f.readlines()
 
-# load the data in graph
-for tweet in tweets:
-    load_data(prune_tweet(json.loads(tweet), 'google'))
+    # initialize the graph
+    neo4j = Neo4j()
+
+    # clear the self.graph
+    neo4j.delete_all()
+
+    # load the data in self.graph
+    for tweet in google_tweets:
+        # discard the tweets which don't have hashtag
+        tweet_json = json.loads(tweet)
+        if len(tweet_json["entities"]["hashtags"]) != 0:
+            neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
+
+    for tweet in apple_tweets:
+        # discard the tweets which don't have hashtag
+        tweet_json = json.loads(tweet)
+        if len(tweet_json["entities"]["hashtags"]) != 0:
+            neo4j.load_data(utils.prune_tweet(tweet_json, 'apple'))
+
+    for tweet in huawei_tweets:
+        # discard the tweets which don't have hashtag
+        tweet_json = json.loads(tweet)
+        if len(tweet_json["entities"]["hashtags"]) != 0:
+            neo4j.load_data(utils.prune_tweet(tweet_json, 'huawei'))
