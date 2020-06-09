@@ -40,6 +40,14 @@ These can be helpful scripts for testing or POC. Put all such scripts in the art
 <li>MongoDB
 <li>Neo4j
 <li>Machine learning
+</ul>
+
+### To load data to Neo4j:
+<ol>
+<li>Run neo4j community edition as a console application. 
+<li>Configure Neo4j.py with uri, user, password and database.</li>
+<li> Run the Neo4j.py. Run "Match(n) return(n)" in the browser neo4j console to verify.</li>
+
 
 
 
