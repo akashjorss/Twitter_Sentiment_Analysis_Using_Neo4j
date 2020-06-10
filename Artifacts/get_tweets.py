@@ -1,3 +1,4 @@
+
 import os
 import tweepy
 from tweepy import OAuthHandler
@@ -23,10 +24,10 @@ class MyListener(StreamListener):
         return True
 
 
-consumer_key = os.environ['CONSUMER_KEY'] #"Damib7oklPRnO1ylqzb0Yd0I6"
-consumer_secret = os.environ['CONSUMER_SECRET'] #"KRP00SvjGAn0WYpMC8IPmbbl6jYvVMKkAbujjPrVE1OJADY3yB"
-access_token = os.environ['ACCESS_TOKEN'] #"1119247282388344832-8d30pPeXuRpxLUr0Ps5jk3UhJEEC1N"
-access_secret = os.environ['ACCESS_SECRET'] #"8WEBOgqe1417FmMpZwCwurlWqYooqwmn9oWvuyFlZKw8e"
+consumer_key = os.environ['CONSUMER_KEY']
+consumer_secret = os.environ['CONSUMER_SECRET']
+access_token = os.environ['ACCESS_TOKEN']
+access_secret = os.environ['ACCESS_SECRET']
 
 auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)

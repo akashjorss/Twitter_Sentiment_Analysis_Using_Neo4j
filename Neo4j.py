@@ -1,6 +1,7 @@
 from py2neo import Graph, Node, Relationship
 import json
 import utils
+import sys
 
 
 class Neo4j:
@@ -93,6 +94,7 @@ if __name__ == "__main__":
     for tweet in google_tweets:
         # discard the tweets which don't have hashtag
         tweet_json = json.loads(tweet)
+        print(sys.getsizeof(tweet_json))
         if len(tweet_json["entities"]["hashtags"]) != 0:
             neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
 
