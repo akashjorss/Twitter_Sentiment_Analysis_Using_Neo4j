@@ -19,7 +19,7 @@ class TwitterStream(StreamListener):
     def __init__(self, csocket):
         self.client_socket = csocket
 
-    def on_data(self,data):
+    def on_data(self, data):
         try:
             self.client_socket.send(data.encode('utf-8'))
             print("The message is sent")
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a socket object
         host = "localhost"  # Get local machine name
-        port = 10000  # Reserve a port for your service.
+        port = 10001  # Reserve a port for your service.
         s.bind((host, port))  # Bind to the port
 
         print("Listening on port: %s" % str(port))

@@ -13,7 +13,7 @@ if __name__ == "__main__":
     ssc = StreamingContext(sc, 1)
 
     # get the tweets
-    tweets = ssc.socketTextStream("localhost", 10000)
+    tweets = ssc.socketTextStream("localhost", 10001)
 
     # convert string data to json
     tweets_json = tweets.map(lambda x: json.loads(x))
@@ -28,8 +28,8 @@ if __name__ == "__main__":
     pruned_tweets = company_tweet_pair.map(lambda x: utils.prune_tweet(x[1], x[0]))
 
     # upload to neo4j
-    #neo4j = Neo4j()
-    #pruned_tweets.foreachRDD(lambda rdd: rdd.foreach(neo4j.load_data))
+    neo4j = Neo4j()
+    pruned_tweets.foreachRDD(lambda rdd: print(rdd.collect()))
 
     pruned_tweets.pprint()
 
