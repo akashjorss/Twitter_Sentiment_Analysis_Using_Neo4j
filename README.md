@@ -46,9 +46,9 @@ These can be helpful scripts for testing or POC. Put all such scripts in the art
 <ol>
 <li>Run neo4j community edition as a console application. 
 <li>Configure Neo4j.py with uri, user, password and database.</li>
-<li> Run the Neo4j.py. Run "Match(n) return(n)" in the browser neo4j console to verify.</li>
-
-
+<li>Configure tweet_server with your twitter credentials and run it.</li>
+<li>Run spark-streaming.py concurrently in command line. (Make sure you have openjdk 8)</li>
+<li>Open neo4j browser and explore the data</li>
 
 
 
