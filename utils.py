@@ -2,7 +2,8 @@ from textblob import TextBlob
 
 def prune_tweet(tweet, company):
     """
-    :param tweet: a native tweet object
+    :param tweet: a json tweet object
+    :param company: company name
     :return: tweet, a modified tweet object with only relevant keys
     """
     #calculate polarity
@@ -22,3 +23,17 @@ def prune_tweet(tweet, company):
         "hashtags": hashtags,
     }
     return modified_tweet
+
+
+def identify_company(tweet, companies):
+    """
+    :param tweet: tweet object
+    :param companies: list of companies
+    :return: list of (company, tweet) pairs
+    """
+    flatmap = []
+    for company in companies:
+        if company in tweet['text']:
+            flatmap.append((company, tweet))
+
+    return flatmap

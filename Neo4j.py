@@ -14,6 +14,7 @@ class Neo4j:
 
     def load_data(self, tweet):
         """
+        Loads one tweet at a time
         :param tweet: a json doc with following schema
         {
             "type": "record",
@@ -73,6 +74,16 @@ class Neo4j:
         # print("Hashtag nodes created")
         # print("Changes to self.graph complete")
 
+    def bulk_load(self, tweets):
+        """
+        Bulk loads list of tweets
+        :param self:
+        :param tweets:
+        :return:
+        """
+        for tweet in tweets:
+            self.load_data(t)
+            print("Tweet loaded into neo4j")
 
 
 if __name__ == "__main__":

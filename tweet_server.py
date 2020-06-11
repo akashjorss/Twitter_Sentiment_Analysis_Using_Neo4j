@@ -12,6 +12,7 @@ consumer_key = os.environ['CONSUMER_KEY']
 consumer_secret = os.environ['CONSUMER_SECRET']
 access_token = os.environ['ACCESS_TOKEN']
 access_secret = os.environ['ACCESS_SECRET']
+COMPANIES = ['google', 'microsoft', 'ibm', 'sap', 'amazon', 'accenture', 'bmw', 'siemens', 'nvidia', 'apple']
 
 class TwitterStream(StreamListener):
 
@@ -34,10 +35,11 @@ class TwitterStream(StreamListener):
 
 
 def sendData(c_socket):
+
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_secret)
     twitter_stream = Stream(auth, TwitterStream(c_socket))
-    twitter_stream.filter(track=['google'], languages=["en"])
+    twitter_stream.filter(track=COMPANIES, languages=["en"])
 
 
 if __name__ == "__main__":
@@ -53,7 +55,11 @@ if __name__ == "__main__":
         c, addr = s.accept()  # Establish connection with client.
         print("Received request from: " + str(addr))
         print(c)
-        sendData(c)
+
+        try:
+            sendData(c)
+        except:
+            print("Could not send data")
 
     finally:
         s.close()
