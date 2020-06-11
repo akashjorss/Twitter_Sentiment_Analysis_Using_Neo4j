@@ -345,4 +345,4 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/linux,macos,pycharm,windows,eclipse,intellij,intellij+all
 .DS_Store
 .icloud
-__pycache__
+__pycache__/
