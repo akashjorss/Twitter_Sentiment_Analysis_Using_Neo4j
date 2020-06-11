@@ -19,7 +19,7 @@ if __name__ == "__main__":
     tweets_json = tweets.map(lambda x: json.loads(x))
 
     # filter data based if hashtags are present in tweet or not
-    filtered_tweets = tweets_json.filter(lambda x: x)#len(x["entities"]["hashtags"])>0)
+    filtered_tweets = tweets_json.filter(lambda x: len(x["entities"]["hashtags"]) > 0)
 
     # find out which companies are contained in the tweet
     company_tweet_pair = filtered_tweets.flatMap(lambda x: utils.identify_company(x, COMPANIES))
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     # upload to neo4j
     neo4j = Neo4j()
-    pruned_tweets.foreachRDD(lambda rdd: print(rdd.collect()))
+    pruned_tweets.foreachRDD(lambda rdd: neo4j.bulk_load(rdd.collect()))
 
     pruned_tweets.pprint()
 

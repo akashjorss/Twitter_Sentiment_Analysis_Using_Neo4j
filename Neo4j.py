@@ -31,20 +31,22 @@ class Neo4j:
         }
         :return: None
         """
+        # begin transaction
+        tx = self.graph.begin()
 
         # retrieve company node from the remote self.graph
         company = self.graph.evaluate("MATCH(n) WHERE n.name = {company} return n", company=tweet["company"])
         # if remote node is null, create company node
         if company is None:
             company = Node("Company", name=tweet["company"])
-            self.graph.create(company)
+            tx.create(company)
             # print("Node created:", company)
 
         # repeat above for all nodes
         tweet_node = self.graph.evaluate("MATCH(n) WHERE n.id = {id} return n", id=tweet["id"])
         if tweet_node is None:
             tweet_node = Node("Tweet", id=tweet["id"], sentiment=tweet["sentiment"], retweet_count=tweet["retweet_count"])
-            self.graph.create(tweet_node)
+            tx.create(tweet_node)
             # print("Node created:", tweet_node)
 
         datetime = self.graph.evaluate("MATCH(n) WHERE n.time = {time} AND n.date = {date} return n",
@@ -52,15 +54,15 @@ class Neo4j:
                                   date=tweet["date"])
         if datetime is None:
             datetime = Node("DateTime", time=tweet["time"].split(":")[0]+':'+tweet["time"].split(":")[1], date=tweet["date"])
-            self.graph.create(datetime)
+            tx.create(datetime)
             # print("Node created:", datetime)
 
         # create relationships
         # check if describes already exists
         describes = Relationship(tweet_node, "DESCRIBES", company)
         created_on = Relationship(tweet_node, "CREATED_ON", datetime)
-        self.graph.create(describes)
-        self.graph.create(created_on)
+        tx.create(describes)
+        tx.create(created_on)
         # print("Relationships created")
 
         # create hashtag nodes and connect them with tweet nodes
@@ -68,11 +70,12 @@ class Neo4j:
             hashtag_node = self.graph.evaluate("MATCH(n) WHERE n.name = {hashtag} return n", hashtag=hashtag)
             if hashtag_node is None:
                 hashtag_node = Node("Hashtag", name=hashtag)
-                self.graph.create(hashtag_node)
+                tx.create(hashtag_node)
                 contains_hashtag = Relationship(tweet_node, "CONTAINS_HASHTAG", hashtag_node)
-                self.graph.create(contains_hashtag)
-        # print("Hashtag nodes created")
-        # print("Changes to self.graph complete")
+                tx.create(contains_hashtag)
+
+        # commit transaction
+        tx.commit()
 
     def bulk_load(self, tweets):
         """
@@ -82,7 +85,7 @@ class Neo4j:
         :return:
         """
         for tweet in tweets:
-            self.load_data(t)
+            self.load_data(tweet)
             print("Tweet loaded into neo4j")
 
 
@@ -105,7 +108,6 @@ if __name__ == "__main__":
     for tweet in google_tweets:
         # discard the tweets which don't have hashtag
         tweet_json = json.loads(tweet)
-        print(sys.getsizeof(tweet_json))
         if len(tweet_json["entities"]["hashtags"]) != 0:
             neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
 
