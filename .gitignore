@@ -346,3 +346,4 @@ $RECYCLE.BIN/
 .DS_Store
 .icloud
 __pycache__/
+checkpoints
