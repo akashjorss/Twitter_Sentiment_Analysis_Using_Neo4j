@@ -84,7 +84,7 @@ def run_spark_job(ssc):
     ssc.checkpoint("./checkpoints")
 
     tweet_window = pruned_tweets.window(windowDuration=300, slideDuration=5) \
-        .map(lambda t: {"Company": t['company'], "Sentiment": t['sentiment']})\
+        .map(lambda t: {"Company": t['company'], "Sentiment": round(t['sentiment'], 2)})\
 
     tweet_window.foreachRDD(lambda rdd: load_to_elastic(rdd.collect()))
 
