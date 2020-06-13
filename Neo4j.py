@@ -1,7 +1,8 @@
-from py2neo import Graph, Node, Relationship
 import json
-import utils
 import sys
+
+import utils
+from py2neo import Graph, Node, Relationship
 
 
 class Neo4j:
@@ -45,15 +46,17 @@ class Neo4j:
         # repeat above for all nodes
         tweet_node = self.graph.evaluate("MATCH(n) WHERE n.id = {id} return n", id=tweet["id"])
         if tweet_node is None:
-            tweet_node = Node("Tweet", id=tweet["id"], sentiment=tweet["sentiment"], retweet_count=tweet["retweet_count"])
+            tweet_node = Node("Tweet", id=tweet["id"], sentiment=tweet["sentiment"],
+                              retweet_count=tweet["retweet_count"])
             tx.create(tweet_node)
             # print("Node created:", tweet_node)
 
         datetime = self.graph.evaluate("MATCH(n) WHERE n.time = {time} AND n.date = {date} return n",
-                                  time=tweet["time"].split(":")[0]+':'+tweet["time"].split(':')[1],
-                                  date=tweet["date"])
+                                       time=tweet["time"].split(":")[0] + ':' + tweet["time"].split(':')[1],
+                                       date=tweet["date"])
         if datetime is None:
-            datetime = Node("DateTime", time=tweet["time"].split(":")[0]+':'+tweet["time"].split(":")[1], date=tweet["date"])
+            datetime = Node("DateTime", time=tweet["time"].split(":")[0] + ':' + tweet["time"].split(":")[1],
+                            date=tweet["date"])
             tx.create(datetime)
             # print("Node created:", datetime)
 

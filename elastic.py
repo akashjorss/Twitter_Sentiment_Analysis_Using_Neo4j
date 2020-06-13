@@ -3,8 +3,9 @@ from elasticsearch import helpers
 
 
 class Elastic:
+
     def __init__(self, cloud_id, username, password):
-        es = Elasticsearch(cloud_id=cloud_id,
+        self.es = Elasticsearch(cloud_id=cloud_id,
                            http_auth=(username, password))
 
     def load_stream_analytics(self, **args):
@@ -18,22 +19,21 @@ class Elastic:
         :param index: (string) name of the elastic search index to load data to
         :return: None
         """
-        es = Elasticsearch(cloud_id=Elastic.cloud_id,
-                           http_auth=(Elastic.username, Elastic.password))
 
         # to make the index if it doesn't exist
-        es.index(index, data[0], id=0)
+        self.es.index(index, data[0], id=0)
 
         # Bulk insert
         actions = [{
             "_index": index,
             "_type": "_doc",
             "_id": j,
-            "_source": data[0]
+            "_source": data[j]
         } for j in range(0, len(data))]
         helpers.bulk(self.es, actions)
         print("insert successful")
         self.es.indices.refresh(index=index)
+        print("data loaded to elastic")
 
     def delete_data(self, index, id_range):
         """
@@ -47,10 +47,7 @@ class Elastic:
             "_index": index,
             "_id": j,
         } for j in range(0, id_range)]
-        st = time.time()
         helpers.bulk(self.es, actions)
-        end = time.time()
-        print("total time to bulk delete", end - st)
 
     def clear_data(self, index):
         """
