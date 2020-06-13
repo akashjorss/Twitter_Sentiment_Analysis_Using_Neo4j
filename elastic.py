@@ -6,7 +6,7 @@ class Elastic:
 
     def __init__(self, cloud_id, username, password):
         self.es = Elasticsearch(cloud_id=cloud_id,
-                           http_auth=(username, password))
+                                http_auth=(username, password))
 
     def load_stream_analytics(self, **args):
         """Wrapper to load simulation data"""
