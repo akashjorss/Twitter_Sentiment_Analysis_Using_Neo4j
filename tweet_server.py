@@ -43,8 +43,9 @@ def sendData(c_socket):
     twitter_stream.filter(track=COMPANIES, languages=["en"])
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
 
+def run_server():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a socket object
         host = "localhost"  # Get local machine name
