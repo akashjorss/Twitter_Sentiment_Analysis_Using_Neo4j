@@ -7,6 +7,8 @@ from Neo4j import Neo4j
 from elastic import Elastic
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
+from pyspark.streaming.kafka import KafkaUtils
+
 
 COMPANIES = ['google', 'microsoft', 'ibm', 'sap', 'amazon', 'accenture', 'bmw', 'siemens', 'nvidia', 'apple']
 
@@ -64,9 +66,12 @@ def run_spark_job(ssc):
     :return:
     """
     # get the tweets
-    tweets = ssc.socketTextStream("localhost", 10001)
+    kafka_consumer = KafkaUtils.createDirectStream(
+     ssc, topics=['twitter'], kafkaParams={"metadata.broker.list": 'localhost:9092'})
+    #kafka_consumer = KafkaUtils.createStream(ssc, 'localhost:2181', 'spark-streaming', {'twitter': 1})
+
     # convert string data to json
-    tweets_json = tweets.map(lambda x: json.loads(x))
+    tweets_json = kafka_consumer.map(lambda x: json.loads(x))
 
     # filter data based if hashtags are present in tweet or not
     filtered_tweets = tweets_json  # .filter(lambda x: len(x["entities"]["hashtags"]) > 0)
@@ -93,13 +98,15 @@ def run_spark_job(ssc):
     # pruned_tweets.pprint()
 
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
 
-def run_spark():
+#def run_spark():
     try:
         ssc = create_spark_context(1)
         run_spark_job(ssc)
-
+        # consumer = KafkaConsumer('sample')
+        # for message in consumer:
+        #     print(message)
         # start the spark streaming context
         ssc.start()
         ssc.awaitTermination()

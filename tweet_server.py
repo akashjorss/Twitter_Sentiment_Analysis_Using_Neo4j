@@ -3,11 +3,11 @@ import os
 import pickle
 import socket
 import sys
-
 import tweepy
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
+from kafka import KafkaProducer
 
 consumer_key = os.environ['CONSUMER_KEY']
 consumer_secret = os.environ['CONSUMER_SECRET']
@@ -18,12 +18,13 @@ COMPANIES = ['google', 'microsoft', 'ibm', 'sap', 'amazon', 'accenture', 'bmw', 
 
 class TwitterStream(StreamListener):
 
-    def __init__(self, csocket):
-        self.client_socket = csocket
+    def __init__(self):
+        self.producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
+                                 value_serializer=lambda x: json.dumps(x).encode('utf-8'))
 
     def on_data(self, data):
         try:
-            self.client_socket.send(data.encode('utf-8'))
+            self.producer.send('twitter', value = data)
             print("The message is sent")
             return True
         except BaseException as e:
@@ -36,32 +37,10 @@ class TwitterStream(StreamListener):
         return True
 
 
-def sendData(c_socket):
+if __name__ == "__main__":
+
+#def run_server():
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_secret)
-    twitter_stream = Stream(auth, TwitterStream(c_socket))
+    twitter_stream = Stream(auth, TwitterStream())
     twitter_stream.filter(track=COMPANIES, languages=["en"])
-
-
-#if __name__ == "__main__":
-
-def run_server():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a socket object
-        host = "localhost"  # Get local machine name
-        port = 10001  # Reserve a port for your service.
-        s.bind((host, port))  # Bind to the port
-
-        print("Listening on port: %s" % str(port))
-        s.listen(5)  # Now wait for client connection.
-        c, addr = s.accept()  # Establish connection with client.
-        print("Received request from: " + str(addr))
-        print(c)
-
-        try:
-            sendData(c)
-        except:
-            print("Could not send data")
-
-    finally:
-        s.close()

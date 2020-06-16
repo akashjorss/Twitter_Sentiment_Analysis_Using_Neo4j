@@ -1,11 +1,33 @@
 OpenJDK 64-Bit Server VM (25.232-b09) for bsd-amd64 JRE (1.8.0_232-b09), built on Oct 19 2019 07:00:21 by "jenkins" with gcc 4.2.1 (Based on Apple Inc. build 5658) (LLVM build 2336.11.00)
-Memory: 4k page, physical 8388608k(468432k free)
+Memory: 4k page, physical 8388608k(268664k free)
 
 /proc/meminfo:
 
 CommandLine flags: -XX:+ExplicitGCInvokesConcurrent -XX:GCLogFileSize=104857600 -XX:InitialHeapSize=536870912 -XX:InitiatingHeapOccupancyPercent=35 -XX:+ManagementServer -XX:MaxGCPauseMillis=20 -XX:MaxHeapSize=536870912 -XX:NumberOfGCLogFiles=10 -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC -XX:+UseGCLogFileRotation 
-Heap
- garbage-first heap   total 524288K, used 19456K [0x00000007a0000000, 0x00000007a0101000, 0x00000007c0000000)
-  region size 1024K, 20 young (20480K), 0 survivors (0K)
- Metaspace       used 10024K, capacity 10174K, committed 10240K, reserved 1058816K
-  class space    used 1157K, capacity 1219K, committed 1280K, reserved 1048576K
+2020-06-16T17:48:09.522-0100: 2286.301: [GC pause (G1 Evacuation Pause) (young), 0.0643059 secs]
+   [Parallel Time: 48.3 ms, GC Workers: 4]
+      [GC Worker Start (ms): Min: 2286302.4, Avg: 2286304.5, Max: 2286308.1, Diff: 5.8]
+      [Ext Root Scanning (ms): Min: 0.2, Avg: 6.6, Max: 21.9, Diff: 21.7, Sum: 26.5]
+      [Update RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+         [Processed Buffers: Min: 0, Avg: 0.0, Max: 0, Diff: 0, Sum: 0]
+      [Scan RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]
+      [Code Root Scanning (ms): Min: 0.0, Avg: 0.4, Max: 1.4, Diff: 1.4, Sum: 1.4]
+      [Object Copy (ms): Min: 13.9, Avg: 27.4, Max: 33.0, Diff: 19.1, Sum: 109.4]
+      [Termination (ms): Min: 0.0, Avg: 8.2, Max: 11.3, Diff: 11.3, Sum: 32.8]
+         [Termination Attempts: Min: 1, Avg: 1.0, Max: 1, Diff: 0, Sum: 4]
+      [GC Worker Other (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.1]
+      [GC Worker Total (ms): Min: 36.8, Avg: 42.6, Max: 46.6, Diff: 9.8, Sum: 170.4]
+      [GC Worker End (ms): Min: 2286339.7, Avg: 2286347.1, Max: 2286350.3, Diff: 10.6]
+   [Code Root Fixup: 0.0 ms]
+   [Code Root Purge: 0.1 ms]
+   [Clear CT: 1.5 ms]
+   [Other: 14.4 ms]
+      [Choose CSet: 0.0 ms]
+      [Ref Proc: 12.2 ms]
+      [Ref Enq: 0.0 ms]
+      [Redirty Cards: 0.1 ms]
+      [Humongous Register: 1.5 ms]
+      [Humongous Reclaim: 0.0 ms]
+      [Free CSet: 0.3 ms]
+   [Eden: 25600.0K(25600.0K)->0.0B(21504.0K) Survivors: 0.0B->4096.0K Heap: 25600.0K(512.0M)->3672.5K(512.0M)]
+ [Times: user=0.03 sys=0.03, real=0.06 secs] 
