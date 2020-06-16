@@ -347,4 +347,3 @@ $RECYCLE.BIN/
 .icloud
 __pycache__/
 checkpoints
-startup_script.sh

@@ -1,30 +1,6 @@
 ## SDM/BDM Joint Project
 Twitter sentiment analysis using Speed layer implementation of Lambda architecture. 
 
-### To run this app
-```
-git clone https://github.com/akashjorss/SDM_BDM_Joint_Project.git 
-pip install -r requirement.txt
-```
-setup environment variables as follows:
-```
-export CONSUMER_KEY="your twitter consumer key"
-export CONSUMER_SECRET="you twitter consumer secret"
-export ACCESS_TOKEN="your twitter access token"
-export ACCESS_SECRET="your twitter access secret"
-export ELASTIC_CLOUD_ID="your elastic cloud id" (Ask Akash if you don't have one)
-export ELASTIC_USERNAME="your elastic username"
-export ELASTIC_PASSWORD="your elastic password"
-```
-finally run the app:
-```
-python3 __init__.py
-```
-Make sure you are using java 8 (check by java -version command)
-If not, on Mac, do the following in command line of environment:
-```
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-```
 ### How to contribute to this project?
 To view the project board: https://github.com/akashjorss/SDM_BDM_Joint_Project/projects/1<br>
 Follow GitHub flow: https://guides.github.com/introduction/flow/
