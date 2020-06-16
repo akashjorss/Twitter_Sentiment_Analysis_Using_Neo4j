@@ -68,6 +68,8 @@ def run_spark_job(ssc):
     # convert string data to json
     tweets_json = tweets.map(lambda x: json.loads(x))
 
+    #load tweets to mongodb
+
     # filter data based if hashtags are present in tweet or not
     filtered_tweets = tweets_json  # .filter(lambda x: len(x["entities"]["hashtags"]) > 0)
 
