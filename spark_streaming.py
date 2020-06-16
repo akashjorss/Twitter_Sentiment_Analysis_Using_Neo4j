@@ -84,8 +84,7 @@ def run_spark_job(ssc):
     ssc.checkpoint("./checkpoints")
 
     tweet_window = pruned_tweets.window(windowDuration=300, slideDuration=5) \
-        .map(lambda t: {"Company": t['company'], "Sentiment": round(t['sentiment'], 2)}) \
- \
+        .map(lambda t: {"Company": t['company'], "Sentiment": round(t['sentiment'], 2)})
     tweet_window.foreachRDD(lambda rdd: load_to_elastic(rdd.collect()))
 
     # upload to neo4j
@@ -94,8 +93,9 @@ def run_spark_job(ssc):
     # pruned_tweets.pprint()
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
 
+def run_spark():
     try:
         ssc = create_spark_context(1)
         run_spark_job(ssc)
