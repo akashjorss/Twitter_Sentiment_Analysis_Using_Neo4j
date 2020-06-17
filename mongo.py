@@ -22,6 +22,14 @@ class MongoDB:
             print("Document not inserted")
             return False
 
+    def bulk_load(self, docs):
+        """
+        :param docs: list of documents
+        :return: None
+        """
+        for doc in docs:
+            self.insert_doc(doc)
+
     def clear_collection(self):
         self.collection.delete_many({})
 
@@ -43,11 +51,11 @@ if __name__ == "__main__":
     # instantiate mongod instance
     mongodb = MongoDB()
     # load some tweets in the db
-    with open('./Artifacts/tweets.json', 'r') as f:
-        tweets = f.readlines()
-    for tweet in tweets:
-        mongodb.insert_doc(json.loads(tweet))
+    # with open('./Artifacts/tweets.json', 'r') as f:
+    #     tweets = f.readlines()
+    # for tweet in tweets:
+    #     mongodb.insert_doc(json.loads(tweet))
     # display some tweets
     mongodb.show_docs()
     # clear the collection
-    mongodb.clear_collection()
+   # mongodb.clear_collection()

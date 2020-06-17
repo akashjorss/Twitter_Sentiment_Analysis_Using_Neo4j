@@ -16,7 +16,7 @@ def stop_mongod():
 if __name__ == '__main__':
 
     try:
-        start_mongod()
+        thread.start_new_thread(start_mongod, ())
         thread.start_new_thread(run_spark, ())
         thread.start_new_thread(run_server, ())
 
