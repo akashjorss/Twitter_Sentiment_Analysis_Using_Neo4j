@@ -16,7 +16,8 @@ export ELASTIC_CLOUD_ID="your elastic cloud id" (Ask Akash if you don't have one
 export ELASTIC_USERNAME="your elastic username"
 export ELASTIC_PASSWORD="your elastic password"
 ```
-Start the mongodb server and finally run the app:
+Start the mongodb server. 
+Finally run the app:
 ```
 python3 __init__.py
 ```
@@ -25,7 +26,7 @@ If not, on Mac, do the following in command line of environment:
 ```
 export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
 ```
-If you are not using OSX, change the functions start_mongodb and stop_mongodb in __init__.pygit 
+If you are not using OSX, change the functions start_mongodb and stop_mongodb in __init__.py 
 ### How to contribute to this project?
 To view the project board: https://github.com/akashjorss/SDM_BDM_Joint_Project/projects/1<br>
 Follow GitHub flow: https://guides.github.com/introduction/flow/
