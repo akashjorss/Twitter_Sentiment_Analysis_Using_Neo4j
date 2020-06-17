@@ -1,14 +1,14 @@
+from py2neo import Graph, Node, NodeMatcher, Relationship
 import json
-import sys
-
 import utils
-from py2neo import Graph, Node, Relationship
+import sys
 
 
 class Neo4j:
     def __init__(self):
         # initialize the self.graph
-        self.graph = Graph("bolt://localhost:7687", auth=("neo4j", "password"), database="Database")
+        self.graph = Graph("bolt://localhost:7687", auth=("neo4j", "123"), database="twitter")
+        self.matcher = NodeMatcher(self.graph)
 
     def delete_all(self):
         self.graph.delete_all()
@@ -40,45 +40,48 @@ class Neo4j:
         # if remote node is null, create company node
         if company is None:
             company = Node("Company", name=tweet["company"])
-            tx.create(company)
+            self.graph.create(company)
             # print("Node created:", company)
 
         # repeat above for all nodes
         tweet_node = self.graph.evaluate("MATCH(n) WHERE n.id = {id} return n", id=tweet["id"])
         if tweet_node is None:
-            tweet_node = Node("Tweet", id=tweet["id"], sentiment=tweet["sentiment"],
-                              retweet_count=tweet["retweet_count"])
+            tweet_node = Node("Tweet", id=tweet["id"], sentiment=tweet["sentiment"], retweet_count=tweet["retweet_count"])
             tx.create(tweet_node)
             # print("Node created:", tweet_node)
 
         datetime = self.graph.evaluate("MATCH(n) WHERE n.time = {time} AND n.date = {date} return n",
-                                       time=tweet["time"].split(":")[0] + ':' + tweet["time"].split(':')[1],
-                                       date=tweet["date"])
+                                  time=tweet["time"].split(":")[0]+':'+tweet["time"].split(':')[1],
+                                  date=tweet["date"])
         if datetime is None:
-            datetime = Node("DateTime", time=tweet["time"].split(":")[0] + ':' + tweet["time"].split(":")[1],
-                            date=tweet["date"])
-            tx.create(datetime)
+            datetime = Node("DateTime", time=tweet["time"].split(":")[0]+':'+tweet["time"].split(":")[1], date=tweet["date"])
+            # tx.create(datetime)
             # print("Node created:", datetime)
 
         # create relationships
         # check if describes already exists
-        describes = Relationship(tweet_node, "DESCRIBES", company)
-        created_on = Relationship(tweet_node, "CREATED_ON", datetime)
-        tx.create(describes)
-        tx.create(created_on)
+        # describes = Relationship(tweet_node, "DESCRIBES", company)
+        # created_on = Relationship(tweet_node, "CREATED_ON", datetime)
+        # tx.create(describes)
+        # tx.create(created_on)
         # print("Relationships created")
 
         # create hashtag nodes and connect them with tweet nodes
         for hashtag in tweet["hashtags"]:
-            hashtag_node = self.graph.evaluate("MATCH(n) WHERE n.name = {hashtag} return n", hashtag=hashtag)
+            hashtag_node = self.matcher.match("Hashtag", name=hashtag).first()
+            # hashtag_node = self.graph.evaluate("MATCH(n) WHERE n.name = {hashtag} return n", hashtag=hashtag)
             if hashtag_node is None:
                 hashtag_node = Node("Hashtag", name=hashtag)
                 tx.create(hashtag_node)
-                contains_hashtag = Relationship(tweet_node, "CONTAINS_HASHTAG", hashtag_node)
-                tx.create(contains_hashtag)
+                about = Relationship(hashtag_node, "ABOUT", company)
+                tx.create(about)
+
+            contains_hashtag = Relationship(tweet_node, "CONTAINS", hashtag_node)
+            tx.create(contains_hashtag)
 
         # commit transaction
         tx.commit()
+
 
     def bulk_load(self, tweets):
         """
@@ -87,9 +90,13 @@ class Neo4j:
         :param tweets:
         :return:
         """
-        for tweet in tweets:
-            self.load_data(tweet)
+        for t in tweets:
+            self.load_data(t)
             print("Tweet loaded into neo4j")
+
+    def prune_graph(self):
+        self.graph.evaluate('MATCH (t:Tweet)-[:CONTAINS]->(n) WITH n as n, count(t) as tweet_count WHERE tweet_count < 2 DETACH DELETE n')
+        print('Graph pruned!')
 
 
 if __name__ == "__main__":
@@ -108,20 +115,23 @@ if __name__ == "__main__":
     neo4j.delete_all()
 
     # load the data in self.graph
-    for tweet in google_tweets:
-        # discard the tweets which don't have hashtag
-        tweet_json = json.loads(tweet)
-        if len(tweet_json["entities"]["hashtags"]) != 0:
-            neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
-
-    for tweet in apple_tweets:
-        # discard the tweets which don't have hashtag
-        tweet_json = json.loads(tweet)
-        if len(tweet_json["entities"]["hashtags"]) != 0:
-            neo4j.load_data(utils.prune_tweet(tweet_json, 'apple'))
+    # for tweet in google_tweets:
+    #     # discard the tweets which don't have hashtag
+    #     tweet_json = json.loads(tweet)
+    #     print(sys.getsizeof(tweet_json))
+    #     if len(tweet_json["entities"]["hashtags"]) != 0:
+    #         neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
+    #
+    # for tweet in apple_tweets:
+    #     # discard the tweets which don't have hashtag
+    #     tweet_json = json.loads(tweet)
+    #     if len(tweet_json["entities"]["hashtags"]) != 0:
+    #         neo4j.load_data(utils.prune_tweet(tweet_json, 'apple'))
 
     for tweet in huawei_tweets:
         # discard the tweets which don't have hashtag
         tweet_json = json.loads(tweet)
         if len(tweet_json["entities"]["hashtags"]) != 0:
             neo4j.load_data(utils.prune_tweet(tweet_json, 'huawei'))
+
+    neo4j.prune_graph()
