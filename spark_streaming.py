@@ -7,6 +7,7 @@ from Neo4j import Neo4j
 from elastic import Elastic
 from pyspark import SparkContext
 from pyspark.streaming import StreamingContext
+from mongo import MongoDB
 
 COMPANIES = ['google', 'microsoft', 'ibm', 'sap', 'amazon', 'accenture', 'bmw', 'siemens', 'nvidia', 'apple']
 
@@ -57,6 +58,9 @@ def load_to_neo4j(tweets):
     neo4j = Neo4j()
     neo4j.bulk_load(tweets)
 
+def load_to_mongodb(tweets):
+    mongodb = MongoDB()
+    mongodb.bulk_load(tweets)
 
 def run_spark_job(ssc):
     """
@@ -65,8 +69,12 @@ def run_spark_job(ssc):
     """
     # get the tweets
     tweets = ssc.socketTextStream("localhost", 10001)
+
     # convert string data to json
     tweets_json = tweets.map(lambda x: json.loads(x))
+
+    #load tweets to mongodb
+    tweets_json.foreachRDD(lambda rdd: load_to_mongodb(rdd.collect()))
 
     # filter data based if hashtags are present in tweet or not
     filtered_tweets = tweets_json  # .filter(lambda x: len(x["entities"]["hashtags"]) > 0)
