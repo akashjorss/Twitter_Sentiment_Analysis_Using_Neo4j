@@ -48,8 +48,9 @@ def run_spark_job(ssc):
         .map(lambda t: {"Company": t['company'], "Sentiment": round(t['sentiment'], 2)}) \
         .foreachRDD(lambda rdd: utils.load_to_elastic(rdd.collect()))
 
-    # only load tweets which have hashtag to neo4j
-    pruned_tweets.filter(lambda x: len(x["hashtags"]) > 0) \
+    # only load tweets which have hashtag to neo4j and which have non zero sentiment
+    pruned_tweets.filter(lambda x: len(x["hashtags"]) > 0)\
+        .filter(lambda x: not(x["sentiment"] == 0.0)) \
         .foreachRDD(lambda rdd: utils.load_to_neo4j(rdd.collect()))
 
 
