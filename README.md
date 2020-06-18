@@ -51,7 +51,6 @@ MongoDB for Volume and Variety: <ul>
   <li>Schemaless DBMS, for Variety. 
   <li>Scalable, for volume. 
   <li>Fault tolerant. 
-  <li>Good for OLAP due to aggregation pipeline.</ul>
 Spark Streaming for velocity: <ul>
   <li>Process one tweet (or a document) at a time.</ul>
 
