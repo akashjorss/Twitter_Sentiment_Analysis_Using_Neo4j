@@ -7,8 +7,8 @@ import sys
 class Neo4j:
     def __init__(self):
         # initialize the self.graph
-        self.graph = Graph("bolt://18.235.249.224:33893", auth=("neo4j", "reserve-runways-presences"))
-            #   Graph("bolt://localhost:7687", auth=("neo4j", "password"), database="twitter")
+        #self.graph = Graph("bolt://18.235.249.224:33893", auth=("neo4j", "reserve-runways-presences"))
+        self.graph = Graph("bolt://localhost:7687", auth=("neo4j", "password"), database="twitter")
         self.matcher = NodeMatcher(self.graph)
 
     def delete_all(self):
