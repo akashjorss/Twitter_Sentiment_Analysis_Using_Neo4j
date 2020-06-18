@@ -1,4 +1,8 @@
 from textblob import TextBlob
+from Neo4j import Neo4j
+from elastic import Elastic
+from mongo import MongoDB
+import os
 
 
 def prune_tweet(tweet, company):
@@ -39,3 +43,32 @@ def identify_company(tweet, companies):
             flatmap.append((company, tweet))
 
     return flatmap
+
+
+def load_to_elastic(json_docs):
+    """
+    :param json_docs: list of json docs
+    :return: None
+    """
+
+    # upload to elastic
+    if len(json_docs) > 0:
+        print(json_docs)
+        elastic = Elastic(cloud_id=os.environ['ELASTIC_CLOUD_ID'],
+                          username=os.environ['ELASTIC_USERNAME'], password=os.environ['ELASTIC_PASSWORD'])
+        elastic.clear_data("tweet-index")
+        elastic.load_data(json_docs, "tweet-index")
+
+
+def load_to_neo4j(tweets):
+    """
+    :param tweets: list of json object
+    :return: None
+    """
+    neo4j = Neo4j()
+    neo4j.bulk_load(tweets)
+
+
+def load_to_mongodb(tweets):
+    mongodb = MongoDB()
+    mongodb.bulk_load(tweets)

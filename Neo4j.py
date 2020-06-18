@@ -7,7 +7,8 @@ import sys
 class Neo4j:
     def __init__(self):
         # initialize the self.graph
-        self.graph = Graph("bolt://localhost:7687", auth=("neo4j", "password"), database="twitter")
+        self.graph = Graph("bolt://18.235.249.224:33893", auth=("neo4j", "reserve-runways-presences"))
+            #   Graph("bolt://localhost:7687", auth=("neo4j", "password"), database="twitter")
         self.matcher = NodeMatcher(self.graph)
 
     def delete_all(self):
@@ -40,7 +41,7 @@ class Neo4j:
         # if remote node is null, create company node
         if company is None:
             company = Node("Company", name=tweet["company"])
-            self.graph.create(company)
+            tx.create(company)
             # print("Node created:", company)
 
         # repeat above for all nodes
@@ -95,7 +96,8 @@ class Neo4j:
             print("Tweet loaded into neo4j")
 
     def prune_graph(self):
-        self.graph.evaluate('MATCH (t:Tweet)-[:CONTAINS]->(n) WITH n as n, count(t) as tweet_count WHERE tweet_count < 2 DETACH DELETE n')
+        self.graph.evaluate('MATCH (t:Tweet)-[:CONTAINS]->(n) WITH n as n, count(t) as tweet_count WHERE tweet_count '
+                            '< 2 DETACH DELETE n')
         print('Graph pruned!')
 
 
@@ -115,12 +117,11 @@ if __name__ == "__main__":
     neo4j.delete_all()
 
     # load the data in self.graph
-    # for tweet in google_tweets:
-    #     # discard the tweets which don't have hashtag
-    #     tweet_json = json.loads(tweet)
-    #     print(sys.getsizeof(tweet_json))
-    #     if len(tweet_json["entities"]["hashtags"]) != 0:
-    #         neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
+    for tweet in google_tweets:
+        # discard the tweets which don't have hashtag
+        tweet_json = json.loads(tweet)
+        if len(tweet_json["entities"]["hashtags"]) != 0:
+            neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
     #
     # for tweet in apple_tweets:
     #     # discard the tweets which don't have hashtag
@@ -128,10 +129,10 @@ if __name__ == "__main__":
     #     if len(tweet_json["entities"]["hashtags"]) != 0:
     #         neo4j.load_data(utils.prune_tweet(tweet_json, 'apple'))
 
-    for tweet in huawei_tweets:
-        # discard the tweets which don't have hashtag
-        tweet_json = json.loads(tweet)
-        if len(tweet_json["entities"]["hashtags"]) != 0:
-            neo4j.load_data(utils.prune_tweet(tweet_json, 'huawei'))
+    # for tweet in huawei_tweets:
+    #     # discard the tweets which don't have hashtag
+    #     tweet_json = json.loads(tweet)
+    #     if len(tweet_json["entities"]["hashtags"]) != 0:
+    #         neo4j.load_data(utils.prune_tweet(tweet_json, 'huawei'))
 
     neo4j.prune_graph()
