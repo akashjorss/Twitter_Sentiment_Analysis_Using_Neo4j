@@ -102,11 +102,7 @@ class Neo4j:
 
 if __name__ == "__main__":
     # read tweets files of different companies
-    with open('Artifacts/google_tweets.json', 'r') as f:
-        google_tweets = f.readlines()
-    with open('Artifacts/apple_tweets.json', 'r') as f:
-        apple_tweets = f.readlines()
-    with open('Artifacts/apple_tweets.json', 'r') as f:
+    with open('new_huawei_tweets.json', 'r') as f:
         huawei_tweets = f.readlines()
 
     # initialize the graph
@@ -116,22 +112,10 @@ if __name__ == "__main__":
     neo4j.delete_all()
 
     # load the data in self.graph
-    for tweet in google_tweets:
+    for tweet in huawei_tweets:
         # discard the tweets which don't have hashtag
         tweet_json = json.loads(tweet)
         if len(tweet_json["entities"]["hashtags"]) != 0:
-            neo4j.load_data(utils.prune_tweet(tweet_json, 'google'))
-    #
-    # for tweet in apple_tweets:
-    #     # discard the tweets which don't have hashtag
-    #     tweet_json = json.loads(tweet)
-    #     if len(tweet_json["entities"]["hashtags"]) != 0:
-    #         neo4j.load_data(utils.prune_tweet(tweet_json, 'apple'))
-
-    # for tweet in huawei_tweets:
-    #     # discard the tweets which don't have hashtag
-    #     tweet_json = json.loads(tweet)
-    #     if len(tweet_json["entities"]["hashtags"]) != 0:
-    #         neo4j.load_data(utils.prune_tweet(tweet_json, 'huawei'))
+            neo4j.load_data(utils.prune_tweet(tweet_json, 'huawei'))
 
     neo4j.prune_graph()

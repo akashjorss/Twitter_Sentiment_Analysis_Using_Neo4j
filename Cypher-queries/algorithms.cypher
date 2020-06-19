@@ -19,6 +19,11 @@ match (h:Hashtag)-[:CONTAINS]-(t:Tweet)
 WHERE h.name=Hashtag
 WITH community,h,t,t.sentiment As sentiment
 RETURN community, collect(distinct h.name) AS Hashtags,count(t) AS numberOfTweets, sum(sentiment) AS OverallSentiment ORDER BY numberOfTweets DESC
+// Running Label Propagation algorithm over Hashtag-Hashtag projected graph
+CALL gds.labelPropagation.stream('g', { seedProperty: 'sent_label', relationshipWeightProperty: 'weight' })
+YIELD nodeId, communityId AS Community
+RETURN gds.util.asNode(nodeId).name AS Name, Community
+ORDER BY Community, Name
 
 //Pagerank for hashtags
 CALL algo.pageRank.stream('', '', {iterations:20})
