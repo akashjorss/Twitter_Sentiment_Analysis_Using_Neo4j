@@ -32,7 +32,7 @@ pycorenlp==0.3.0
 Pygments==2.3.1
 pymongo==3.10.1
 PySocks==1.7.1
-pyspark==2.2.3
+pyspark==3.2.2
 pytz==2020.1
 regex==2020.6.8
 requests==2.23.0
